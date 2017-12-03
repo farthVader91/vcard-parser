@@ -39,17 +39,17 @@
 
 (defun tel-p (line)
   (and
-   (>= (length line 4))
+   (>= (length line) 4)
    (string= "TEL;" (subseq line 0 4))))
 
 (defun fn-p (line)
   (and
-   (>= (length line 3))
+   (>= (length line) 3)
    (string= "FN:" (subseq line 0 3))))
 
 (defun n-p (line)
   (and
-   (>= (length line 2))
+   (>= (length line) 2)
    (string= "N:" (subseq line 0 2))))
 
 (defun extract-n (line)
