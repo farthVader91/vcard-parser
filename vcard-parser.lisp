@@ -64,13 +64,10 @@
 
 (defun process-vcard (lines)
   (let ((vc (make-instance 'vcard)))
-    (mapc #'(lambda (line)
-              (when (>= (length line) 4)
-                (cond
-                  ((tel-p line) (setf (tel vc) (push (extract-tel line) (tel vc))))
-                  ((fn-p line) (setf (fn vc) (extract-fn line)))
-                  ((n-p line) (setf (n vc) (extract-n line)))))) lines) vc))
-
+    (mapc #'(lambda (line) (cond
+                             ((tel-p line) (setf (tel vc) (push (extract-tel line) (tel vc))))
+                             ((fn-p line) (setf (fn vc) (extract-fn line)))
+                             ((n-p line) (setf (n vc) (extract-n line))))) lines) vc))
 
 (defun parse-vcf (file)
   (with-open-file (in file)
