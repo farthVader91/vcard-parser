@@ -1,7 +1,6 @@
-vCard Parser:
-=============
+# vCard Parser:
 
-** Features:
+## Features:
 - Parse vCard files(.vcf) 
-- Merge contacts based on various criteria
-- Export them in various formats(json, csv supported currently)
+- Merge contacts(by telephone numbers by default, along with support for specifying criteria)
+- Export them in various formats(currently supports - json, csv)
