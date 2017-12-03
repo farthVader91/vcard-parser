@@ -79,7 +79,3 @@
                                       (when vcard (push vcard vcards)))
        else do (push line lines)
        finally (return vcards))))
-
-(defmethod print-object ((obj vcard) out)
-           (print-unreadable-object (obj out :type t)
-             (format out "~s" (n obj))))
