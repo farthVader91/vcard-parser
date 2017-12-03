@@ -58,7 +58,8 @@
       string)))
 
 (defun extract-tel (line)
-  (multiple-value-bind (orig matches) (cl-ppcre:scan-to-strings (cl-ppcre:create-scanner "^TEL;.*:(\\+?\\d+)$") line)
+  (multiple-value-bind (orig matches) (cl-ppcre:scan-to-strings
+                                       (cl-ppcre:create-scanner "^TEL;.*:(\\+?\\d+)$") line)
     (when (and matches (> (length matches) 0))
       (aref matches 0))))
 
