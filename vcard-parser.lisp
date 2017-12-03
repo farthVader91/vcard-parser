@@ -1,16 +1,12 @@
-(in-package :cl-user)
-
-(defpackage #:vcard-parser
-  (:nicknames #:vcparser)
-  (:use :cl :cl-user)
-  (:export #:parse-vcf :vcard))
-
 (in-package :vcard-parser)
 
-(ql:quickload "cl-ppcre")
+(eval-when (:compile-toplevel)
+  (ql:quickload "cl-ppcre")
+  (ql:quickload "cl-ppcre"))
 
 (defconstant +block-start-pattern+ "BEGIN:VCARD")
 (defconstant +block-end-pattern+ "END:VCARD")
+(defconstant +export-formats+ '(json csv))
 
 (defun vcard-startp (line)
   (string= +block-start-pattern+ line))
@@ -80,3 +76,16 @@
                                       (when vcard (push vcard vcards)))
        else do (push line lines)
        finally (return vcards))))
+
+(define-condition unsupported-export-format (error)
+  ((text :initarg :text :reader text)))
+
+(defun export-json (vcards outfile)
+  (with-open-file (out outfile :direction :output :if-exists :supersede)
+    (loop for vcard in vcards
+         )))
+
+(defun export (vcards &key fmt (out-file (format nil "exported.~(~a~)" fmt)))
+  (cond ((eql fmt 'json) (export-json (vcards outfile)))
+        ((eql fmt 'csv) (export-csv (vcards outfile)))
+        (t (error 'unsupported-export-format :text (format nil "~a is not a supported format" fmt)))))
