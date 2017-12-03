@@ -37,6 +37,21 @@
     (when matchp
       string)))
 
+(defun tel-p (line)
+  (and
+   (>= (length line 4))
+   (string= "TEL;" (subseq line 0 4))))
+
+(defun fn-p (line)
+  (and
+   (>= (length line 3))
+   (string= "FN:" (subseq line 0 3))))
+
+(defun n-p (line)
+  (and
+   (>= (length line 2))
+   (string= "N:" (subseq line 0 2))))
+
 (defun extract-n (line)
   (multiple-value-bind (string matchp) (cl-ppcre:regex-replace "N:" line "")
     (when matchp
@@ -52,9 +67,9 @@
     (mapc #'(lambda (line)
               (when (>= (length line) 4)
                 (cond
-                  ((string= "TEL;" (subseq line 0 4)) (setf (tel vc) (push (extract-tel line) (tel vc))))
-                  ((string= "FN:" (subseq line 0 3)) (setf (fn vc) (extract-fn line)))
-                  ((string= "N:" (subseq line 0 2)) (setf (n vc) (extract-n line)))))) lines) vc))
+                  ((tel-p line) (setf (tel vc) (push (extract-tel line) (tel vc))))
+                  ((fn-p line) (setf (fn vc) (extract-fn line)))
+                  ((n-p line) (setf (n vc) (extract-n line)))))) lines) vc))
 
 
 (defun parse-vcf (file)
