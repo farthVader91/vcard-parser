@@ -63,7 +63,7 @@
     (when (and matches (> (length matches) 0))
       (aref matches 0))))
 
-(defun process-vcard (lines)
+(defun make-vcard (lines)
   (let ((vc (make-instance 'vcard)))
     (mapc #'(lambda (line) (cond
                              ((tel-p line) (setf (tel vc) (push (extract-tel line) (tel vc))))
