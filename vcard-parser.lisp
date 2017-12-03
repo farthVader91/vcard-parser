@@ -71,12 +71,13 @@
 
 (defun parse-vcf (file)
   (with-open-file (in file)
-    (loop with vcard = nil
-       for line = (read-line in nil)
-       until (eq line nil)
-       if (vcard-startp line) do (setf vcard nil)
-       else if (vcard-endp line) collect (process-vcard vcard) into vcards
-       else do (push line vcard)
+    (loop with lines = nil and vcards = nil
+       for line = (read-line in nil) until (eq line nil)
+       if (vcard-startp line) do (setf lines nil)
+       else if (vcard-endp line) do (let ((vcard (handler-case (make-vcard lines)
+                                                   (cl-ppcre:ppcre-syntax-error () nil))))
+                                      (when vcard (push vcard vcards)))
+       else do (push line lines)
        finally (return vcards))))
 
 (defmethod print-object ((obj vcard) out)
