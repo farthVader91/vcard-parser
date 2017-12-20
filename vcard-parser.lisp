@@ -2,6 +2,7 @@
 
 (defconstant +block-start-pattern+ "BEGIN:VCARD")
 (defconstant +block-end-pattern+ "END:VCARD")
+(defconstant +export-formats+ '(json csv))
 
 (defun vcard-startp (line)
   (string= +block-start-pattern+ line))
@@ -71,3 +72,15 @@
                                       (when vcard (push vcard vcards)))
        else do (push line lines)
        finally (return vcards))))
+
+(define-condition unsupported-export-format (error)
+  ((text :initarg :text :reader text)))
+
+(defun export-json (vcards outfile)
+  (with-open-file (out outfile :direction :output :if-exists :supersede)
+    (encode-json vcards out) ))
+
+(defun export (vcards &key fmt (outfile (format nil "exported.~(~a~)" fmt)))
+  (cond ((string= (symbol-name fmt) "JSON") (export-json vcards outfile))
+        ((string= (symbol-name fmt) "CSV") (export-csv vcards outfile))
+        (t (error 'unsupported-export-format :text (format nil "~a is not a supported format" fmt)))))
