@@ -80,6 +80,14 @@
   (with-open-file (out outfile :direction :output :if-exists :supersede)
     (encode-json vcards out) ))
 
+(defun export-csv (vcards outfile)
+  (with-open-file (out outfile :direction :output :if-exists :supersede)
+    (progn
+      (format out "n,fn,tel~%")
+      (loop for vcard in vcards
+         do (write-csv-row (with-slots (n fn tel) vcard
+                             (list n fn tel)) :stream out)))))
+
 (defun export (vcards &key fmt (outfile (format nil "exported.~(~a~)" fmt)))
   (cond ((string= (symbol-name fmt) "JSON") (export-json vcards outfile))
         ((string= (symbol-name fmt) "CSV") (export-csv vcards outfile))
